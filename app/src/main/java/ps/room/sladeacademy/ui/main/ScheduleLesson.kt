@@ -29,6 +29,5 @@ class ScheduleLesson : AppCompatActivity() {
             }
         }
 
-
     }
 }

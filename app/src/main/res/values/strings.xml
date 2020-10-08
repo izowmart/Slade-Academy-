@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Slade Academy</string>
+    <string name="tab_text_1">Class 6</string>
+    <string name="tab_text_2">Class 7</string>
+    <string name="tab_text_3">Class 8</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>

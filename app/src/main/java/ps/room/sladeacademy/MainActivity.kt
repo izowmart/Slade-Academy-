@@ -15,6 +15,7 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.FirebaseDatabase
 import kotlinx.android.synthetic.main.login_layout.view.*
 import kotlinx.android.synthetic.main.registration_layout.view.*
 import ps.room.sladeacademy.ui.main.ScheduleLesson
@@ -25,6 +26,8 @@ import timber.log.Timber
 class MainActivity : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
     private var currentUser: FirebaseUser? = null
+    private var database = FirebaseDatabase.getInstance()
+    var userRef = database.getReference("user")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -161,23 +164,28 @@ class MainActivity : AppCompatActivity() {
                     regPasswordInput2.error = "Passwords must be matching!";
                 }
                 else -> {
-                    signUpWithEmailAndPassword(regEmail, regPassword2);
+                    signUpWithEmailAndPassword(regEmail, regPassword2, regName, regSubject)
                 }
             }
         }
-        val login_here = dialogView.login_txt
-        login_here.setOnClickListener(View.OnClickListener {
+        val loginHere = dialogView.login_txt
+        loginHere.setOnClickListener(View.OnClickListener {
             regDialogBuilder.dismiss() // Dismiss the dialog then show the Login dialog
             loginDialog()
 
         })
 
-        regDialogBuilder.setView(dialogView);
-        regDialogBuilder.setCancelable(true);
-        regDialogBuilder.show();
+        regDialogBuilder.setView(dialogView)
+        regDialogBuilder.setCancelable(true)
+        regDialogBuilder.show()
     }
 
-    private fun signUpWithEmailAndPassword(regEmail: String, regPassword2: String) {
+    private fun signUpWithEmailAndPassword(
+        regEmail: String,
+        regPassword2: String,
+        regName: String,
+        regSubject: String
+    ) {
         mAuth!!.createUserWithEmailAndPassword(regEmail, regPassword2)
             .addOnCompleteListener(
                 this
@@ -186,7 +194,12 @@ class MainActivity : AppCompatActivity() {
                     // Sign in success, update UI with the signed-in user's information
                     Timber.d("createUserWithEmail:success")
                     currentUser = mAuth!!.currentUser
-                    Toast.makeText(applicationContext, "Registration successful.", Toast.LENGTH_SHORT)
+                    sendToRealtimeDatabase(regEmail, regName, regSubject)
+                    Toast.makeText(
+                        applicationContext,
+                        "Registration successful.",
+                        Toast.LENGTH_SHORT
+                    )
                         .show()
                 } else {
                     // If sign in fails, display a message to the user.
@@ -197,6 +210,26 @@ class MainActivity : AppCompatActivity() {
 
             }
 
+    }
+
+    private fun sendToRealtimeDatabase(regEmail: String, regName: String, regSubject: String) {
+        Timber.d("storing data to firebase realtime")
+        var userObj = HashMap<String, String>().apply {
+            put("email",regEmail)
+            put("name",regName)
+            put("subject",regSubject)
+        }
+        userRef.child(currentUser.toString()).setValue(userObj).addOnCompleteListener(this,
+            OnCompleteListener {
+                if (it.isSuccessful) {
+                    Timber.i("Data has been stored successfully")
+                    Toast.makeText(applicationContext, "User has been stored successfully", Toast.LENGTH_SHORT).show()
+                    //Todo update the menu item from log in to logout
+                } else {
+                    Timber.i("An error occurred while registering user%s", it.exception)
+                    Toast.makeText(applicationContext, "An error occurred while registering user", Toast.LENGTH_SHORT).show()
+                }
+            })
     }
 
     private fun signInWithEmailAndPassword(email: String, password: String) {

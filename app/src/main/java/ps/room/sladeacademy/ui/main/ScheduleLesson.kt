@@ -85,6 +85,7 @@ class ScheduleLesson : AppCompatActivity() {
     }
 
     private fun verifyScheduledLesson() {
+        //Todo if no allocation of the teacher in another class and the class is vacant, schedule the class with the lesson
 
     }
 

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "710196690041",
+    "firebase_url": "https://slade-academy.firebaseio.com",
+    "project_id": "slade-academy",
+    "storage_bucket": "slade-academy.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710196690041:android:6e30350103f6d064e668a8",
+        "android_client_info": {
+          "package_name": "ps.room.sladeacademy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "710196690041-g5m2ee1es1uhv6e3ta31lelvnprhdkpl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJl75O_0Cpt83J7r9BUiLQAquYZ96hf4A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "710196690041-g5m2ee1es1uhv6e3ta31lelvnprhdkpl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

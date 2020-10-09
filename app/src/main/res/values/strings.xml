@@ -3,6 +3,18 @@
     <string name="tab_text_1">Class 6</string>
     <string name="tab_text_2">Class 7</string>
     <string name="tab_text_3">Class 8</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string-array name="classes">
+        <item>Class 6</item>
+        <item>Class 7</item>
+        <item>Class 8</item>
+    </string-array>
+
+    <string-array name="class_durations">
+        <item>7:00 – 9:00 am</item>
+        <item>9:00 – 11:00 am</item>
+        <item>11:00 – 1:00 pm</item>
+        <item>2:00 – 3:30 pm</item>
+        <item>3:30 – 4:30 pm</item>
+    </string-array>
 </resources>

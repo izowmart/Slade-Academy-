@@ -2,6 +2,8 @@ package ps.room.sladeacademy.ui.main
 
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
+import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -16,10 +18,11 @@ import timber.log.Timber
 
 class ScheduleLesson : AppCompatActivity() {
     private var mAuth: FirebaseAuth? = null
-    private var currentUser : FirebaseUser? = null
+    private var currentUser: FirebaseUser? = null
     private var database = FirebaseDatabase.getInstance()
     var userRef = database.getReference("user")
-    
+    private  var selectedDay : String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_schedule_lesson)
@@ -27,14 +30,64 @@ class ScheduleLesson : AppCompatActivity() {
         Timber.d("On creation of the activity")
         // initialize the auth
         mAuth = FirebaseAuth.getInstance()
-        
+
         val toolbar = schedule_toolbar
         toolbar.title = "Schedule Lesson"
         setSupportActionBar(toolbar)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        //load data to the spinners
+        loadSpinners()
+        // Respond to button selection
+        toggleButton.addOnButtonCheckedListener { toggleButton, checkedId, isChecked ->
+            when(checkedId){
+                R.id.mon_btn ->{
+                    selectedDay = "Monday"
+                }
+                R.id.teu_btn ->{
+                    selectedDay = "Teusday"
+                }
+                R.id.wed_btn ->{
+                    selectedDay = "Wednesday"
+                }
+                R.id.thu_btn ->{
+                    selectedDay = "Thursday"
+                }
+                R.id.fri_btn ->{
+                    selectedDay = "Friday"
+                }else ->{
+                selectedDay = null
+            }
+            }
+        }
+        schedule_btn.setOnClickListener(View.OnClickListener {
+            //Must verify whether the teacher is allocated another class during that period
+            verifyScheduledLesson()
+        })
     }
-    
+
+    private fun loadSpinners() {
+        Timber.i("select class spinner")
+        ArrayAdapter.createFromResource(
+            applicationContext, R.array.classes, android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            class_spinner.adapter = it
+        }
+        // Set spinner for the time duration
+        ArrayAdapter.createFromResource(
+            applicationContext, R.array.class_durations, android.R.layout.simple_spinner_item
+        ).also {
+            it.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+            time_spinner.adapter = it
+        }
+    }
+
+    private fun verifyScheduledLesson() {
+
+    }
+
     override fun onStart() {
         super.onStart()
         Timber.d("onStart of the activity")
@@ -48,16 +101,17 @@ class ScheduleLesson : AppCompatActivity() {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 // This method is called once with the initial value and again
                 // whenever data at this location is updated.
-                if (dataSnapshot.hasChildren()){
+                if (dataSnapshot.hasChildren()) {
                     Timber.d("Data has been updated%s", dataSnapshot)
                     teacher_profile_name.text = dataSnapshot.child("name").toString()
                     teacher_email.text = dataSnapshot.child("email").toString()
                     teacher_profession.text = dataSnapshot.child("subject").toString()
-                }else{
+                } else {
                     Timber.d("No data found")
                 }
 
             }
+
             override fun onCancelled(error: DatabaseError) {
                 // Failed to read value
                 Timber.w("Failed to read value.%s", error.toException())
